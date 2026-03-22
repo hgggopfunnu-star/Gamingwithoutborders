@@ -1,4 +1,5 @@
-const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const { PermissionsBitField } = require("discord.js");
+const { createEmbed } = require("../utils/embed");
 
 module.exports = {
 
@@ -7,19 +8,28 @@ module.exports = {
   async execute(message, args) {
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers))
-      return;
+      return message.reply({
+        embeds: [createEmbed("error", "Error", "No permission")]
+      });
 
     const user = message.mentions.members.first();
 
-    if (!user) return;
+    if (!user)
+      return message.reply({
+        embeds: [createEmbed("error", "Error", "Mention user")]
+      });
 
     await user.kick();
 
-    const embed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setDescription(`Kicked ${user.user.tag}`);
-
-    message.reply({ embeds: [embed] });
+    message.reply({
+      embeds: [
+        createEmbed(
+          "success",
+          "User kicked",
+          `${user.user.tag} was kicked`
+        )
+      ]
+    });
 
   }
 
