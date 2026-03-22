@@ -3,7 +3,11 @@ const { Client, GatewayIntentBits } = require("discord.js");
 const prefix = "&";
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ]
 });
 
 client.once("ready", () => {
@@ -11,11 +15,18 @@ client.once("ready", () => {
 });
 
 client.on("messageCreate", (message) => {
-  if (!message.content) return;
 
-  if (message.content === "&ping") {
+  if (message.author.bot) return;
+
+  if (!message.content.startsWith(prefix)) return;
+
+  const args = message.content.slice(prefix.length).split(" ");
+  const cmd = args.shift().toLowerCase();
+
+  if (cmd === "ping") {
     message.reply("pong");
   }
+
 });
 
 client.login(process.env.TOKEN);
