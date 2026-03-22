@@ -32,10 +32,10 @@ if (fs.existsSync(commandsPath)) {
 
   for (const file of files) {
 
-    const cmd = require(`./commands/${file}`);
+    const command = require(`./commands/${file}`);
 
-    if (cmd.name) {
-      client.commands.set(cmd.name, cmd);
+    if (command.name) {
+      client.commands.set(command.name, command);
     }
 
   }
@@ -47,7 +47,7 @@ if (fs.existsSync(commandsPath)) {
 
 client.once("ready", () => {
 
-  console.log(`Online as ${client.user.tag}`);
+  console.log(`✅ GamingWithoutBorders Bot Online: ${client.user.tag}`);
 
   client.user.setPresence({
     status: "online",
@@ -64,7 +64,7 @@ client.once("ready", () => {
 
 // ================= COMMAND HANDLER =================
 
-client.on("messageCreate", async message => {
+client.on("messageCreate", message => {
 
   if (message.author.bot) return;
 
@@ -87,14 +87,14 @@ client.on("messageCreate", async message => {
 
   } catch (err) {
 
-    console.error(err);
+    console.log(err);
 
   }
 
 });
 
 
-// ================= SAFE WELCOME =================
+// ================= WELCOME / LOGS SAFE =================
 
 client.on("guildMemberAdd", member => {
 
@@ -109,6 +109,7 @@ client.on("guildMemberAdd", member => {
     const cfg = data[member.guild.id];
 
     if (!cfg) return;
+
     if (!cfg.welcome) return;
 
     const ch = member.guild.channels.cache.get(cfg.welcome);
@@ -117,16 +118,10 @@ client.on("guildMemberAdd", member => {
 
     ch.send(`Welcome ${member}`);
 
-  } catch (err) {
-
-    console.log(err);
-
-  }
+  } catch (err) {}
 
 });
 
-
-// ================= SAFE LOGS =================
 
 client.on("guildMemberRemove", member => {
 
@@ -141,6 +136,7 @@ client.on("guildMemberRemove", member => {
     const cfg = data[member.guild.id];
 
     if (!cfg) return;
+
     if (!cfg.logs) return;
 
     const ch = member.guild.channels.cache.get(cfg.logs);
@@ -149,11 +145,7 @@ client.on("guildMemberRemove", member => {
 
     ch.send(`${member.user.tag} left`);
 
-  } catch (err) {
-
-    console.log(err);
-
-  }
+  } catch (err) {}
 
 });
 
