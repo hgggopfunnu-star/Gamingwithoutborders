@@ -8,8 +8,6 @@ const {
 const fs = require("fs");
 const path = require("path");
 
-const { getGuild } = require("./utils/config");
-
 const prefix = "&";
 
 const client = new Client({
@@ -24,17 +22,23 @@ const client = new Client({
 client.commands = new Collection();
 
 
-// ================= COMMAND LOADER =================
+// ================= LOAD COMMANDS =================
 
 const commandsPath = path.join(__dirname, "commands");
 
-const files = fs.readdirSync(commandsPath);
+if (fs.existsSync(commandsPath)) {
 
-for (const file of files) {
+  const files = fs.readdirSync(commandsPath);
 
-  const cmd = require(`./commands/${file}`);
+  for (const file of files) {
 
-  client.commands.set(cmd.name, cmd);
+    const cmd = require(`./commands/${file}`);
+
+    if (cmd.name) {
+      client.commands.set(cmd.name, cmd);
+    }
+
+  }
 
 }
 
@@ -90,36 +94,66 @@ client.on("messageCreate", async message => {
 });
 
 
-// ================= WELCOME =================
+// ================= SAFE WELCOME =================
 
 client.on("guildMemberAdd", member => {
 
-  const cfg = getGuild(member.guild.id);
+  try {
 
-  if (!cfg.welcome) return;
+    const file = "./data/config.json";
 
-  const ch = member.guild.channels.cache.get(cfg.welcome);
+    if (!fs.existsSync(file)) return;
 
-  if (!ch) return;
+    const data = JSON.parse(fs.readFileSync(file));
 
-  ch.send(`Welcome ${member}`);
+    const cfg = data[member.guild.id];
+
+    if (!cfg) return;
+    if (!cfg.welcome) return;
+
+    const ch = member.guild.channels.cache.get(cfg.welcome);
+
+    if (!ch) return;
+
+    ch.send(`Welcome ${member}`);
+
+  } catch (err) {
+
+    console.log(err);
+
+  }
 
 });
 
 
-// ================= LEAVE / LOGS =================
+// ================= SAFE LOGS =================
 
 client.on("guildMemberRemove", member => {
 
-  const cfg = getGuild(member.guild.id);
+  try {
 
-  if (!cfg.logs) return;
+    const file = "./data/config.json";
 
-  const ch = member.guild.channels.cache.get(cfg.logs);
+    if (!fs.existsSync(file)) return;
 
-  if (!ch) return;
+    const data = JSON.parse(fs.readFileSync(file));
 
-  ch.send(`${member.user.tag} left`);
+    const cfg = data[member.guild.id];
+
+    if (!cfg) return;
+    if (!cfg.logs) return;
+
+    const ch = member.guild.channels.cache.get(cfg.logs);
+
+    if (!ch) return;
+
+    ch.send(`${member.user.tag} left`);
+
+  } catch (err) {
+
+    console.log(err);
+
+  }
 
 });
 
