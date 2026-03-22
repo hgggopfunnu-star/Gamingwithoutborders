@@ -14,7 +14,7 @@ function panel(title, description, fields = []) {
     .setTitle(`⚙️ ${title}`)
     .setDescription(description)
     .setFooter({
-      text: "GamingWithoutBorders • System",
+      text: "GamingWithoutBorders",
     })
     .setTimestamp();
 
