@@ -1,50 +1,44 @@
 const { EmbedBuilder } = require("discord.js");
 
-const theme = {
+const colors = {
+  main: 0x5865F2,
   success: 0x57F287,
   error: 0xED4245,
-  info: 0x5865F2,
-  warn: 0xFEE75C,
-  main: 0x2B2D31
+  warn: 0xFEE75C
 };
 
-function ui(type, title, description) {
+function panel(title, description, fields = []) {
 
-  const color = theme[type] || theme.main;
-
-  return new EmbedBuilder()
-    .setColor(color)
-    .setAuthor({
-      name: "GamingWithoutBorders",
-    })
-    .setTitle(title)
+  const embed = new EmbedBuilder()
+    .setColor(colors.main)
+    .setTitle(`⚙️ ${title}`)
     .setDescription(description)
     .setFooter({
-      text: "GamingWithoutBorders Bot • Ultra",
+      text: "GamingWithoutBorders • System",
     })
     .setTimestamp();
 
+  if (fields.length) embed.addFields(fields);
+
+  return embed;
 }
 
-function success(title, text) {
-  return ui("success", title, text);
+function ok(text) {
+  return new EmbedBuilder()
+    .setColor(colors.success)
+    .setDescription(`✅ ${text}`)
+    .setTimestamp();
 }
 
-function error(title, text) {
-  return ui("error", title, text);
-}
-
-function info(title, text) {
-  return ui("info", title, text);
-}
-
-function warn(title, text) {
-  return ui("warn", title, text);
+function fail(text) {
+  return new EmbedBuilder()
+    .setColor(colors.error)
+    .setDescription(`❌ ${text}`)
+    .setTimestamp();
 }
 
 module.exports = {
-  success,
-  error,
-  info,
-  warn
+  panel,
+  ok,
+  fail
 };
