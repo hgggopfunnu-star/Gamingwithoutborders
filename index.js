@@ -33,7 +33,7 @@ client.on("messageCreate", async (message) => {
   // ping
 
   if (cmd === "ping") {
-    return message.reply("pong");
+    return message.reply("@1485151155918082100");
   }
 
 
