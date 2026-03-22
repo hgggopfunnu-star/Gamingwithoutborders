@@ -22,13 +22,13 @@ const dataDir = "./data";
 
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
 
-const birthdaysFile = dataDir + "/birthdays.json";
-const todoFile = dataDir + "/todo.json";
 const configFile = dataDir + "/config.json";
+const birthdayFile = dataDir + "/birthdays.json";
+const todoFile = dataDir + "/todo.json";
 
-if (!fs.existsSync(birthdaysFile)) fs.writeJsonSync(birthdaysFile, {});
-if (!fs.existsSync(todoFile)) fs.writeJsonSync(todoFile, {});
 if (!fs.existsSync(configFile)) fs.writeJsonSync(configFile, {});
+if (!fs.existsSync(birthdayFile)) fs.writeJsonSync(birthdayFile, {});
+if (!fs.existsSync(todoFile)) fs.writeJsonSync(todoFile, {});
 
 
 // READY
@@ -81,7 +81,7 @@ client.on("messageCreate", async msg => {
   const cmd = args.shift().toLowerCase();
 
 
-  // MUTE
+  // mute
 
   if (cmd === "mute") {
 
@@ -89,72 +89,103 @@ client.on("messageCreate", async msg => {
 
     const user = msg.mentions.members.first();
     const time = args[1];
-    const reason = args.slice(2).join(" ") || "No reason";
 
-    if (!user) return;
+    if (!user || !time) return;
 
-    await user.timeout(ms(time), reason);
+    await user.timeout(ms(time));
 
     msg.reply("Muted");
 
   }
 
 
-  // BAN
+  // ban
 
   if (cmd === "ban") {
 
     if (!msg.member.permissions.has(PermissionsBitField.Flags.BanMembers)) return;
 
     const user = msg.mentions.members.first();
-    const reason = args.slice(1).join(" ");
 
     if (!user) return;
 
-    await user.ban({ reason });
+    await user.ban();
 
     msg.reply("Banned");
 
   }
 
 
-  // KICK
+  // kick
 
   if (cmd === "kick") {
 
     if (!msg.member.permissions.has(PermissionsBitField.Flags.KickMembers)) return;
 
     const user = msg.mentions.members.first();
-    const reason = args.slice(1).join(" ");
 
     if (!user) return;
 
-    await user.kick(reason);
+    await user.kick();
 
     msg.reply("Kicked");
 
   }
 
 
-  // SET BDAY
+  // setwelcome
+
+  if (cmd === "setwelcome") {
+
+    const ch = msg.mentions.channels.first();
+
+    const config = await fs.readJson(configFile);
+
+    config.welcome = ch.id;
+
+    await fs.writeJson(configFile, config);
+
+    msg.reply("Welcome set");
+
+  }
+
+
+  // setgoodbye
+
+  if (cmd === "setgoodbye") {
+
+    const ch = msg.mentions.channels.first();
+
+    const config = await fs.readJson(configFile);
+
+    config.goodbye = ch.id;
+
+    await fs.writeJson(configFile, config);
+
+    msg.reply("Goodbye set");
+
+  }
+
+
+  // setbirthday
 
   if (cmd === "setbirthday") {
 
     const user = msg.mentions.users.first();
     const date = args[1];
 
-    const data = await fs.readJson(birthdaysFile);
+    const data = await fs.readJson(birthdayFile);
 
     data[user.id] = date;
 
-    await fs.writeJson(birthdaysFile, data);
+    await fs.writeJson(birthdayFile, data);
 
     msg.reply("Birthday saved");
 
   }
 
 
-  // SET BDAY CHANNEL
+  // setbirthdaychannel
 
   if (cmd === "setbirthdaychannel") {
 
@@ -171,7 +202,7 @@ client.on("messageCreate", async msg => {
   }
 
 
-  // TODO CREATE
+  // todo create
 
   if (cmd === "createtodo") {
 
@@ -188,7 +219,7 @@ client.on("messageCreate", async msg => {
   }
 
 
-  // TODO ADD
+  // todo add
 
   if (cmd === "addtodo") {
 
@@ -198,10 +229,8 @@ client.on("messageCreate", async msg => {
     const data = await fs.readJson(todoFile);
 
     data[list].push({
-
       text,
       status: "Not done"
-
     });
 
     await fs.writeJson(todoFile, data);
@@ -211,7 +240,7 @@ client.on("messageCreate", async msg => {
   }
 
 
-  // TODO STATUS
+  // todo status
 
   if (cmd === "todostatus") {
 
@@ -230,7 +259,7 @@ client.on("messageCreate", async msg => {
   }
 
 
-  // DELETE TODO
+  // delete todo
 
   if (cmd === "deltodo") {
 
@@ -248,48 +277,14 @@ client.on("messageCreate", async msg => {
   }
 
 
-  // SET WELCOME
-
-  if (cmd === "setwelcome") {
-
-    const ch = msg.mentions.channels.first();
-
-    const config = await fs.readJson(configFile);
-
-    config.welcome = ch.id;
-
-    await fs.writeJson(configFile, config);
-
-    msg.reply("Welcome set");
-
-  }
-
-
-  // SET GOODBYE
-
-  if (cmd === "setgoodbye") {
-
-    const ch = msg.mentions.channels.first();
-
-    const config = await fs.readJson(configFile);
-
-    config.goodbye = ch.id;
-
-    await fs.writeJson(configFile, config);
-
-    msg.reply("Goodbye set");
-
-  }
-
-
 });
 
 
-// BDAY CHECK
+// birthday check
 
 async function checkBirthdays() {
 
-  const data = await fs.readJson(birthdaysFile);
+  const data = await fs.readJson(birthdayFile);
   const config = await fs.readJson(configFile);
 
   if (!config.birthday) return;
