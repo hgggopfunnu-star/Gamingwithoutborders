@@ -94,6 +94,54 @@ client.on("messageCreate", async message => {
   const cmd = args.shift().toLowerCase();
 
 
+  // HELP
+
+  if (cmd === "help") {
+
+    return message.reply(`
+📜 Commands
+
+&ping
+&say text
+
+&kick @user reason
+&ban @user reason
+&mute @user 10m reason
+
+&setwelcome #channel
+&setgoodbye #channel
+
+&setbirthday @user 22-3
+&setbirthdaychannel #channel
+
+&createtodo name
+&addtodo name text
+&todostatus name index status
+&deltodo name index
+`);
+  }
+
+
+  // SAY
+
+  if (cmd === "say") {
+
+    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages))
+      return;
+
+    const text = args.join(" ");
+
+    if (!text) return;
+
+    message.delete().catch(() => {});
+
+    message.channel.send(text);
+
+  }
+
+
+  // ping
+
   if (cmd === "ping") return message.reply("pong");
 
 
@@ -187,7 +235,7 @@ client.on("messageCreate", async message => {
   }
 
 
-  // setbirthday
+  // birthday
 
   if (cmd === "setbirthday") {
 
@@ -204,8 +252,6 @@ client.on("messageCreate", async message => {
 
   }
 
-
-  // setbirthdaychannel
 
   if (cmd === "setbirthdaychannel") {
 
@@ -327,10 +373,7 @@ async function checkBirthdays() {
 }
 
 
-// crash protection
-
 process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
-
 
 client.login(process.env.TOKEN);
