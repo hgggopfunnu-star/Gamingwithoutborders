@@ -1,4 +1,6 @@
-const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const { PermissionsBitField } = require("discord.js");
+
+const { ok, fail } = require("../utils/ui");
 
 module.exports = {
 
@@ -7,19 +9,21 @@ module.exports = {
   async execute(message, args) {
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers))
-      return;
+      return message.reply({ embeds: [fail("No permission")] });
 
     const user = message.mentions.members.first();
+    const reason = args.slice(1).join(" ") || "No reason";
 
-    if (!user) return;
+    if (!user)
+      return message.reply({ embeds: [fail("Mention user")] });
 
-    await user.ban();
+    await user.ban({ reason });
 
-    const embed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setDescription(`Banned ${user.user.tag}`);
-
-    message.reply({ embeds: [embed] });
+    message.reply({
+      embeds: [
+        ok(`${user.user.tag} banned\nReason: ${reason}`)
+      ]
+    });
 
   }
 
