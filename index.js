@@ -6,32 +6,28 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers
+    GatewayIntentBits.MessageContent
   ]
 });
 
 client.once("ready", () => {
-  console.log("Bot online");
+  console.log("✅ Bot online");
 });
 
+client.on("messageCreate", (message) => {
 
-client.on("messageCreate", (msg) => {
+  if (message.author.bot) return;
 
-  if (msg.author.bot) return;
-  if (!msg.content.startsWith(prefix)) return;
+  if (!message.content.startsWith(prefix)) return;
 
-  const args = msg.content.slice(prefix.length).split(" ");
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
   const cmd = args.shift().toLowerCase();
 
 
-  // test command
-
   if (cmd === "ping") {
-    msg.reply("pong");
+    message.reply("pong");
   }
 
 });
-
 
 client.login(process.env.TOKEN);
