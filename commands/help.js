@@ -1,4 +1,4 @@
-const { createEmbed } = require("../utils/embed");
+const { info } = require("../utils/ui");
 
 module.exports = {
 
@@ -6,9 +6,8 @@ module.exports = {
 
   execute(message) {
 
-    const embed = createEmbed(
-      "info",
-      "Commands",
+    const embed = info(
+      "Command Menu",
       `
 General
 &ping
