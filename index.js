@@ -2,7 +2,8 @@ const {
   Client,
   GatewayIntentBits,
   ActivityType,
-  PermissionsBitField
+  PermissionsBitField,
+  EmbedBuilder
 } = require("discord.js");
 
 const fs = require("fs-extra");
@@ -36,7 +37,7 @@ if (!fs.existsSync(todoFile)) fs.writeJsonSync(todoFile, {});
 
 client.once("ready", () => {
 
-  console.log(`✅ GamingWithoutBorders Bot Online: ${client.user.tag}`);
+  console.log(`✅ GamingWithoutBorders Online`);
 
   client.user.setPresence({
     status: "online",
@@ -53,6 +54,16 @@ client.once("ready", () => {
 });
 
 
+// EMBED COLORS
+
+const colors = {
+  red: 0xff0000,
+  green: 0x00ff88,
+  blue: 0x0099ff,
+  yellow: 0xffcc00
+};
+
+
 // JOIN
 
 client.on("guildMemberAdd", async member => {
@@ -63,7 +74,15 @@ client.on("guildMemberAdd", async member => {
 
   const ch = member.guild.channels.cache.get(config.welcome);
 
-  if (ch) ch.send(`👋 Welcome ${member.user.tag}`);
+  if (!ch) return;
+
+  const embed = new EmbedBuilder()
+    .setColor(colors.green)
+    .setTitle("Welcome")
+    .setDescription(`Welcome ${member}`)
+    .setThumbnail(member.user.displayAvatarURL());
+
+  ch.send({ embeds: [embed] });
 
 });
 
@@ -78,7 +97,14 @@ client.on("guildMemberRemove", async member => {
 
   const ch = member.guild.channels.cache.get(config.goodbye);
 
-  if (ch) ch.send(`😢 ${member.user.tag} left`);
+  if (!ch) return;
+
+  const embed = new EmbedBuilder()
+    .setColor(colors.red)
+    .setTitle("Member Left")
+    .setDescription(`${member.user.tag} left`);
+
+  ch.send({ embeds: [embed] });
 
 });
 
@@ -98,27 +124,27 @@ client.on("messageCreate", async message => {
 
   if (cmd === "help") {
 
-    return message.reply(`
-📜 Commands
-
+    const embed = new EmbedBuilder()
+      .setColor(colors.blue)
+      .setTitle("Commands")
+      .setDescription(`
 &ping
 &say text
-
 &kick @user reason
 &ban @user reason
-&mute @user 10m reason
-
+&mute @user 10m
 &setwelcome #channel
 &setgoodbye #channel
-
 &setbirthday @user 22-3
 &setbirthdaychannel #channel
-
 &createtodo name
 &addtodo name text
-&todostatus name index status
-&deltodo name index
+&todostatus name id status
+&deltodo name id
 `);
+
+    return message.reply({ embeds: [embed] });
+
   }
 
 
@@ -131,21 +157,31 @@ client.on("messageCreate", async message => {
 
     const text = args.join(" ");
 
-    if (!text) return;
-
     message.delete().catch(() => {});
 
-    message.channel.send(text);
+    const embed = new EmbedBuilder()
+      .setColor(colors.blue)
+      .setDescription(text);
+
+    message.channel.send({ embeds: [embed] });
 
   }
 
 
-  // ping
+  // PING
 
-  if (cmd === "ping") return message.reply("pong");
+  if (cmd === "ping") {
+
+    const embed = new EmbedBuilder()
+      .setColor(colors.green)
+      .setDescription("Pong");
+
+    return message.reply({ embeds: [embed] });
+
+  }
 
 
-  // kick
+  // KICK
 
   if (cmd === "kick") {
 
@@ -153,18 +189,21 @@ client.on("messageCreate", async message => {
       return;
 
     const user = message.mentions.members.first();
-    const reason = args.slice(1).join(" ") || "No reason";
 
     if (!user) return;
 
-    await user.kick(reason);
+    await user.kick();
 
-    message.reply("Kicked");
+    const embed = new EmbedBuilder()
+      .setColor(colors.red)
+      .setDescription(`Kicked ${user.user.tag}`);
+
+    message.reply({ embeds: [embed] });
 
   }
 
 
-  // ban
+  // BAN
 
   if (cmd === "ban") {
 
@@ -177,12 +216,16 @@ client.on("messageCreate", async message => {
 
     await user.ban();
 
-    message.reply("Banned");
+    const embed = new EmbedBuilder()
+      .setColor(colors.red)
+      .setDescription(`Banned ${user.user.tag}`);
+
+    message.reply({ embeds: [embed] });
 
   }
 
 
-  // mute
+  // MUTE
 
   if (cmd === "mute") {
 
@@ -196,156 +239,18 @@ client.on("messageCreate", async message => {
 
     await user.timeout(ms(time));
 
-    message.reply("Muted");
-
-  }
-
-
-  // setwelcome
-
-  if (cmd === "setwelcome") {
-
-    const ch = message.mentions.channels.first();
-
-    const config = await fs.readJson(configFile);
-
-    config.welcome = ch.id;
-
-    await fs.writeJson(configFile, config);
-
-    message.reply("Welcome set");
-
-  }
-
-
-  // setgoodbye
-
-  if (cmd === "setgoodbye") {
-
-    const ch = message.mentions.channels.first();
-
-    const config = await fs.readJson(configFile);
-
-    config.goodbye = ch.id;
-
-    await fs.writeJson(configFile, config);
-
-    message.reply("Goodbye set");
-
-  }
-
-
-  // birthday
-
-  if (cmd === "setbirthday") {
-
-    const user = message.mentions.users.first();
-    const date = args[1];
-
-    const data = await fs.readJson(birthdayFile);
-
-    data[user.id] = date;
-
-    await fs.writeJson(birthdayFile, data);
-
-    message.reply("Birthday saved");
-
-  }
-
-
-  if (cmd === "setbirthdaychannel") {
-
-    const ch = message.mentions.channels.first();
-
-    const config = await fs.readJson(configFile);
-
-    config.birthday = ch.id;
-
-    await fs.writeJson(configFile, config);
-
-    message.reply("Birthday channel set");
-
-  }
-
-
-  // todo create
-
-  if (cmd === "createtodo") {
-
-    const name = args[0];
-
-    const data = await fs.readJson(todoFile);
-
-    data[name] = [];
-
-    await fs.writeJson(todoFile, data);
-
-    message.reply("Todo created");
-
-  }
-
-
-  // todo add
-
-  if (cmd === "addtodo") {
-
-    const list = args[0];
-    const text = args.slice(1).join(" ");
-
-    const data = await fs.readJson(todoFile);
-
-    data[list].push({
-      text,
-      status: "Not done"
-    });
-
-    await fs.writeJson(todoFile, data);
-
-    message.reply("Added");
-
-  }
-
-
-  // todo status
-
-  if (cmd === "todostatus") {
-
-    const list = args[0];
-    const index = args[1];
-    const status = args[2];
-
-    const data = await fs.readJson(todoFile);
-
-    data[list][index].status = status;
-
-    await fs.writeJson(todoFile, data);
-
-    message.reply("Updated");
-
-  }
-
-
-  // todo delete
-
-  if (cmd === "deltodo") {
-
-    const list = args[0];
-    const index = args[1];
-
-    const data = await fs.readJson(todoFile);
-
-    data[list].splice(index, 1);
-
-    await fs.writeJson(todoFile, data);
-
-    message.reply("Deleted");
+    const embed = new EmbedBuilder()
+      .setColor(colors.yellow)
+      .setDescription(`Muted ${user.user.tag} for ${time}`);
+
+    message.reply({ embeds: [embed] });
 
   }
 
 });
 
 
-// birthday check
+// BDAY
 
 async function checkBirthdays() {
 
@@ -364,7 +269,12 @@ async function checkBirthdays() {
 
     if (data[id] === now) {
 
-      ch.send(`🎂 Happy Birthday <@${id}>`);
+      const embed = new EmbedBuilder()
+        .setColor(colors.green)
+        .setTitle("Birthday")
+        .setDescription(`Happy Birthday <@${id}>`);
+
+      ch.send({ embeds: [embed] });
 
     }
 
