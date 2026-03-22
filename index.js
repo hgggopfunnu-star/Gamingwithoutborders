@@ -7,61 +7,73 @@ const {
 const fs = require("fs-extra");
 const ms = require("ms");
 
-const prefix = "$";
+const prefix = "&";
 
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers
   ]
 });
 
-if (!fs.existsSync("./data")) fs.mkdirSync("./data");
+const dataDir = "./data";
 
-const birthdaysFile = "./data/birthdays.json";
-const todoFile = "./data/todo.json";
-const configFile = "./data/config.json";
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
+
+const birthdaysFile = dataDir + "/birthdays.json";
+const todoFile = dataDir + "/todo.json";
+const configFile = dataDir + "/config.json";
 
 if (!fs.existsSync(birthdaysFile)) fs.writeJsonSync(birthdaysFile, {});
 if (!fs.existsSync(todoFile)) fs.writeJsonSync(todoFile, {});
 if (!fs.existsSync(configFile)) fs.writeJsonSync(configFile, {});
 
 
-// ================= READY =================
+// READY
 
 client.once("ready", () => {
-  console.log(`✅ Logged in as ${client.user.tag}`);
+  console.log("Bot online");
 
   setInterval(checkBirthdays, 60000);
 });
 
 
-// ================= JOIN / LEAVE =================
+// JOIN
 
 client.on("guildMemberAdd", async member => {
+
   const config = await fs.readJson(configFile);
 
   if (!config.welcome) return;
 
   const ch = member.guild.channels.cache.get(config.welcome);
+
   if (ch) ch.send(`👋 Welcome ${member.user.tag}`);
+
 });
 
+
+// LEAVE
+
 client.on("guildMemberRemove", async member => {
+
   const config = await fs.readJson(configFile);
 
   if (!config.goodbye) return;
 
   const ch = member.guild.channels.cache.get(config.goodbye);
-  if (ch) ch.send(`😢 ${member.user.tag} left the server`);
+
+  if (ch) ch.send(`😢 ${member.user.tag} left`);
+
 });
 
 
-// ================= COMMAND =================
+// COMMANDS
 
 client.on("messageCreate", async msg => {
+
   if (!msg.content.startsWith(prefix)) return;
   if (msg.author.bot) return;
 
@@ -69,28 +81,29 @@ client.on("messageCreate", async msg => {
   const cmd = args.shift().toLowerCase();
 
 
-
-  // ---------- MUTE ----------
+  // MUTE
 
   if (cmd === "mute") {
+
     if (!msg.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) return;
 
     const user = msg.mentions.members.first();
     const time = args[1];
     const reason = args.slice(2).join(" ") || "No reason";
 
-    if (!user) return msg.reply("Mention user");
-    if (!time) return msg.reply("Give time");
+    if (!user) return;
 
     await user.timeout(ms(time), reason);
 
-    msg.reply(`Muted ${user.user.tag} for ${time}`);
+    msg.reply("Muted");
+
   }
 
 
-  // ---------- BAN ----------
+  // BAN
 
   if (cmd === "ban") {
+
     if (!msg.member.permissions.has(PermissionsBitField.Flags.BanMembers)) return;
 
     const user = msg.mentions.members.first();
@@ -100,13 +113,15 @@ client.on("messageCreate", async msg => {
 
     await user.ban({ reason });
 
-    msg.reply(`Banned ${user.user.tag}`);
+    msg.reply("Banned");
+
   }
 
 
-  // ---------- KICK ----------
+  // KICK
 
   if (cmd === "kick") {
+
     if (!msg.member.permissions.has(PermissionsBitField.Flags.KickMembers)) return;
 
     const user = msg.mentions.members.first();
@@ -116,17 +131,17 @@ client.on("messageCreate", async msg => {
 
     await user.kick(reason);
 
-    msg.reply(`Kicked ${user.user.tag}`);
+    msg.reply("Kicked");
+
   }
 
 
-  // ---------- SET BIRTHDAY ----------
+  // SET BDAY
 
   if (cmd === "setbirthday") {
+
     const user = msg.mentions.users.first();
     const date = args[1];
-
-    if (!user || !date) return;
 
     const data = await fs.readJson(birthdaysFile);
 
@@ -135,14 +150,15 @@ client.on("messageCreate", async msg => {
     await fs.writeJson(birthdaysFile, data);
 
     msg.reply("Birthday saved");
+
   }
 
 
-  // ---------- SET BDAY CHANNEL ----------
+  // SET BDAY CHANNEL
 
   if (cmd === "setbirthdaychannel") {
+
     const ch = msg.mentions.channels.first();
-    if (!ch) return;
 
     const config = await fs.readJson(configFile);
 
@@ -151,16 +167,15 @@ client.on("messageCreate", async msg => {
     await fs.writeJson(configFile, config);
 
     msg.reply("Birthday channel set");
+
   }
 
 
-
-  // ---------- TODO CREATE ----------
+  // TODO CREATE
 
   if (cmd === "createtodo") {
 
     const name = args[0];
-    if (!name) return;
 
     const data = await fs.readJson(todoFile);
 
@@ -169,10 +184,11 @@ client.on("messageCreate", async msg => {
     await fs.writeJson(todoFile, data);
 
     msg.reply("Todo created");
+
   }
 
 
-  // ---------- TODO ADD ----------
+  // TODO ADD
 
   if (cmd === "addtodo") {
 
@@ -181,20 +197,21 @@ client.on("messageCreate", async msg => {
 
     const data = await fs.readJson(todoFile);
 
-    if (!data[list]) return;
-
     data[list].push({
+
       text,
       status: "Not done"
+
     });
 
     await fs.writeJson(todoFile, data);
 
     msg.reply("Added");
+
   }
 
 
-  // ---------- TODO STATUS ----------
+  // TODO STATUS
 
   if (cmd === "todostatus") {
 
@@ -204,17 +221,16 @@ client.on("messageCreate", async msg => {
 
     const data = await fs.readJson(todoFile);
 
-    if (!data[list]) return;
-
     data[list][index].status = status;
 
     await fs.writeJson(todoFile, data);
 
     msg.reply("Updated");
+
   }
 
 
-  // ---------- DELETE ITEM ----------
+  // DELETE TODO
 
   if (cmd === "deltodo") {
 
@@ -228,11 +244,11 @@ client.on("messageCreate", async msg => {
     await fs.writeJson(todoFile, data);
 
     msg.reply("Deleted");
+
   }
 
 
-
-  // ---------- SET WELCOME ----------
+  // SET WELCOME
 
   if (cmd === "setwelcome") {
 
@@ -244,11 +260,12 @@ client.on("messageCreate", async msg => {
 
     await fs.writeJson(configFile, config);
 
-    msg.reply("Welcome channel set");
+    msg.reply("Welcome set");
+
   }
 
 
-  // ---------- SET GOODBYE ----------
+  // SET GOODBYE
 
   if (cmd === "setgoodbye") {
 
@@ -260,14 +277,15 @@ client.on("messageCreate", async msg => {
 
     await fs.writeJson(configFile, config);
 
-    msg.reply("Goodbye channel set");
+    msg.reply("Goodbye set");
+
   }
+
 
 });
 
 
-
-// ================= BDAY CHECK =================
+// BDAY CHECK
 
 async function checkBirthdays() {
 
@@ -277,19 +295,22 @@ async function checkBirthdays() {
   if (!config.birthday) return;
 
   const today = new Date();
-  const now = `${today.getDate()}-${today.getMonth() + 1}`;
 
-  const channel = client.channels.cache.get(config.birthday);
+  const now = `${today.getDate()}-${today.getMonth()+1}`;
+
+  const ch = client.channels.cache.get(config.birthday);
 
   for (let id in data) {
 
     if (data[id] === now) {
-      channel.send(`🎂 Happy Birthday <@${id}>`);
+
+      ch.send(`🎂 Happy Birthday <@${id}>`);
+
     }
 
   }
+
 }
 
 
-
-client.login("YOUR_TOKEN_HERE");
+client.login(process.env.TOKEN);
