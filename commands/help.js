@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { createEmbed } = require("../utils/embed");
 
 module.exports = {
 
@@ -6,25 +6,26 @@ module.exports = {
 
   execute(message) {
 
-    const embed = new EmbedBuilder()
-      .setColor(0x0099ff)
-      .setTitle("GamingWithoutBorders Bot")
-      .setDescription("Command List")
-      .addFields(
-        {
-          name: "General",
-          value: "`&ping` `&say` `&help`"
-        },
-        {
-          name: "Moderation",
-          value: "`&kick` `&ban` `&mute`"
-        },
-        {
-          name: "Coming Soon",
-          value: "welcome, birthday, todo"
-        }
-      )
-      .setFooter({ text: "Ultra Pro Bot" });
+    const embed = createEmbed(
+      "info",
+      "Commands",
+      `
+General
+&ping
+&say
+&help
+
+Moderation
+&kick
+&ban
+&mute
+
+Systems
+welcome
+birthday
+todo
+`
+    );
 
     message.reply({ embeds: [embed] });
 
