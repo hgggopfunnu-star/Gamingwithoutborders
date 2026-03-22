@@ -1,4 +1,4 @@
-const { info } = require("../utils/ui");
+const { panel } = require("../utils/ui");
 
 module.exports = {
 
@@ -6,24 +6,26 @@ module.exports = {
 
   execute(message) {
 
-    const embed = info(
+    const embed = panel(
       "Command Menu",
-      `
-General
-&ping
-&say
-&help
-
-Moderation
-&kick
-&ban
-&mute
-
-Systems
-welcome
-birthday
-todo
-`
+      "Use &command",
+      [
+        {
+          name: "🧩 General",
+          value: "`&ping` `&say` `&help`",
+          inline: false
+        },
+        {
+          name: "🛡 Moderation",
+          value: "`&kick` `&ban` `&mute`",
+          inline: false
+        },
+        {
+          name: "📦 Systems",
+          value: "`welcome` `birthday` `todo`",
+          inline: false
+        }
+      ]
     );
 
     message.reply({ embeds: [embed] });
