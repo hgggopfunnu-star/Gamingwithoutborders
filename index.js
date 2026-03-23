@@ -14,15 +14,14 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers
+    GatewayIntentBits.MessageContent
   ]
 });
 
 client.commands = new Collection();
 
 
-// ================= LOAD COMMANDS =================
+// ===== LOAD COMMANDS SAFELY =====
 
 const commandsPath = path.join(__dirname, "commands");
 
@@ -32,10 +31,18 @@ if (fs.existsSync(commandsPath)) {
 
   for (const file of files) {
 
-    const command = require(`./commands/${file}`);
+    try {
 
-    if (command.name) {
-      client.commands.set(command.name, command);
+      const command = require(`./commands/${file}`);
+
+      if (command.name) {
+        client.commands.set(command.name, command);
+      }
+
+    } catch (err) {
+
+      console.log("Command load error:", file);
+
     }
 
   }
@@ -43,11 +50,11 @@ if (fs.existsSync(commandsPath)) {
 }
 
 
-// ================= READY =================
+// ===== READY =====
 
 client.once("ready", () => {
 
-  console.log(`✅ GamingWithoutBorders Bot Online: ${client.user.tag}`);
+  console.log(`✅ Bot Online: ${client.user.tag}`);
 
   client.user.setPresence({
     status: "online",
@@ -62,7 +69,7 @@ client.once("ready", () => {
 });
 
 
-// ================= COMMAND HANDLER =================
+// ===== COMMAND HANDLER =====
 
 client.on("messageCreate", message => {
 
@@ -94,68 +101,12 @@ client.on("messageCreate", message => {
 });
 
 
-// ================= WELCOME / LOGS SAFE =================
-
-client.on("guildMemberAdd", member => {
-
-  try {
-
-    const file = "./data/config.json";
-
-    if (!fs.existsSync(file)) return;
-
-    const data = JSON.parse(fs.readFileSync(file));
-
-    const cfg = data[member.guild.id];
-
-    if (!cfg) return;
-
-    if (!cfg.welcome) return;
-
-    const ch = member.guild.channels.cache.get(cfg.welcome);
-
-    if (!ch) return;
-
-    ch.send(`Welcome ${member}`);
-
-  } catch (err) {}
-
-});
-
-
-client.on("guildMemberRemove", member => {
-
-  try {
-
-    const file = "./data/config.json";
-
-    if (!fs.existsSync(file)) return;
-
-    const data = JSON.parse(fs.readFileSync(file));
-
-    const cfg = data[member.guild.id];
-
-    if (!cfg) return;
-
-    if (!cfg.logs) return;
-
-    const ch = member.guild.channels.cache.get(cfg.logs);
-
-    if (!ch) return;
-
-    ch.send(`${member.user.tag} left`);
-
-  } catch (err) {}
-
-});
-
-
-// ================= CRASH PROTECTION =================
+// ===== CRASH PROTECTION =====
 
 process.on("unhandledRejection", console.error);
 process.on("uncaughtException", console.error);
 
 
-// ================= LOGIN =================
+// ===== LOGIN =====
 
 client.login(process.env.TOKEN);
