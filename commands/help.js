@@ -16,19 +16,25 @@ module.exports = {
         {
           name: "📌 General",
           value:
-          "🔹 &help\n🔹 &ping\n🔹 &say"
+          "🔹 &help\n" +
+          "🔹 &ping\n" +
+          "🔹 &say"
         },
 
         {
           name: "🛡️ Moderation",
           value:
-          "🔹 &kick\n🔹 &ban\n🔹 &mute\n🔹 &clear"
+          "🔹 &kick\n" +
+          "🔹 &ban\n" +
+          "🔹 &mute\n" +
+          "🔹 &clear"
         },
 
         {
           name: "⚙️ Setup",
           value:
-          "🔹 &setwelcome\n🔹 &setlogs"
+          "🔹 &setwelcome\n" +
+          "🔹 &setlogs"
         },
 
         {
@@ -40,25 +46,61 @@ module.exports = {
         {
           name: "📝 Todo",
           value:
-          "🔹 &createtodo\n🔹 &addtodo\n🔹 &todo\n🔹 &todostatus\n🔹 &deltodo"
+          "🔹 &createtodo\n" +
+          "🔹 &addtodo\n" +
+          "🔹 &todo\n" +
+          "🔹 &todostatus\n" +
+          "🔹 &deltodo"
         },
 
         {
           name: "😂 Fun",
           value:
-          "🔹 &hack\n🔹 &rate\n🔹 &ship\n🔹 &coin\n🔹 &roll\n🔹 &8ball\n🔹 &fakeban\n🔹 &fakekick\n🔹 &gayrate\n🔹 &love"
+          "🔹 &hack\n" +
+          "🔹 &rate\n" +
+          "🔹 &ship\n" +
+          "🔹 &coin\n" +
+          "🔹 &roll\n" +
+          "🔹 &8ball\n" +
+          "🔹 &fakeban\n" +
+          "🔹 &fakekick\n" +
+          "🔹 &gayrate\n" +
+          "🔹 &love"
         },
 
         {
           name: "👻 Ghost",
           value:
-          "🔹 &ghost\n🔹 &curse\n🔹 &scan\n🔹 &lastseen\n🔹 &ritual\n🔹 &demon\n🔹 &possess\n🔹 &haunted\n🔹 &nightmare\n🔹 &entity\n🔹 &summon\n🔹 &darkweb\n🔹 &666\n🔹 &trace\n🔹 &surveillance\n🔹 &lockdown\n🔹 &protocol\n🔹 &breach\n🔹 &classified\n🔹 &signal\n🔹 &redalert"
+          "🔹 &ghost\n" +
+          "🔹 &curse\n" +
+          "🔹 &scan\n" +
+          "🔹 &lastseen\n" +
+          "🔹 &ritual\n" +
+          "🔹 &demon\n" +
+          "🔹 &possess\n" +
+          "🔹 &haunted\n" +
+          "🔹 &nightmare\n" +
+          "🔹 &entity\n" +
+          "🔹 &summon\n" +
+          "🔹 &darkweb\n" +
+          "🔹 &666\n" +
+          "🔹 &trace\n" +
+          "🔹 &surveillance\n" +
+          "🔹 &lockdown\n" +
+          "🔹 &protocol\n" +
+          "🔹 &breach\n" +
+          "🔹 &classified\n" +
+          "🔹 &signal\n" +
+          "🔹 &redalert"
         },
 
         {
           name: "🔥 Admin Fun",
           value:
-          "🔹 &explode\n🔹 &chaos\n🔹 &freeze\n🔹 &unslow"
+          "🔹 &explode\n" +
+          "🔹 &chaos\n" +
+          "🔹 &freeze\n" +
+          "🔹 &unslow"
         }
 
       )
