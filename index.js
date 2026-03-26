@@ -21,53 +21,43 @@ const client = new Client({
 client.commands = new Collection();
 
 
-// ===== LOAD COMMANDS (FOLDER SAFE) =====
+// ===== LOAD COMMANDS =====
 
 const commandsPath = path.join(__dirname, "commands");
 
-function loadCommands(dir) {
+if (fs.existsSync(commandsPath)) {
 
-  if (!fs.existsSync(dir)) return;
-
-  const files = fs.readdirSync(dir);
+  const files = fs.readdirSync(commandsPath)
+    .filter(f => f.endsWith(".js"));
 
   for (const file of files) {
 
-    const fullPath = path.join(dir, file);
+    try {
 
-    if (fs.lstatSync(fullPath).isDirectory()) {
+      const command =
+        require(`./commands/${file}`);
 
-      loadCommands(fullPath);
+      if (command.name) {
 
-    } else if (file.endsWith(".js")) {
-
-      try {
-
-        const command = require(fullPath);
-
-        if (command.name) {
-          client.commands.set(
-            command.name,
-            command
-          );
-        }
-
-      } catch (err) {
-
-        console.log(
-          "Command load error:",
-          file
+        client.commands.set(
+          command.name,
+          command
         );
 
       }
+
+    } catch (err) {
+
+      console.log(
+        "Command load error:",
+        file
+      );
 
     }
 
   }
 
 }
-
-loadCommands(commandsPath);
 
 
 // ===== READY =====
