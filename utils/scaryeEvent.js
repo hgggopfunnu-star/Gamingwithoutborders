@@ -1,20 +1,22 @@
 const { EmbedBuilder } = require("discord.js");
 
+const CHANNEL_ID = "1456718440843972793";
+
 const messages = [
 
   {
     title: "👻 Ghost Activity",
-    text: "Unknown presence detected in this server..."
+    text: "Unknown presence detected..."
   },
 
   {
     title: "⚠ System Alert",
-    text: "Security check running..."
+    text: "Security scan running..."
   },
 
   {
     title: "💻 Hack Alert",
-    text: "Someone tried to access the database..."
+    text: "Unauthorized access detected..."
   },
 
   {
@@ -24,7 +26,7 @@ const messages = [
 
   {
     title: "☠ Warning",
-    text: "Do not trust what you see."
+    text: "Something is watching."
   }
 
 ];
@@ -33,36 +35,23 @@ module.exports = (client) => {
 
   setInterval(() => {
 
-    const guilds = client.guilds.cache;
+    const channel = client.channels.cache.get(CHANNEL_ID);
 
-    guilds.forEach(guild => {
+    if (!channel) return;
 
-      const channel =
-        guild.systemChannel ||
-        guild.channels.cache
-          .filter(c => c.isTextBased())
-          .first();
+    const data =
+      messages[Math.floor(Math.random() * messages.length)];
 
-      if (!channel) return;
+    const embed = new EmbedBuilder()
+      .setColor("DarkRed")
+      .setTitle(data.title)
+      .setDescription(data.text)
+      .setFooter({
+        text: "System Event"
+      });
 
-      // 5% chance
-      if (Math.random() > 0.05) return;
+    channel.send({ embeds: [embed] });
 
-      const data =
-        messages[Math.floor(Math.random() * messages.length)];
-
-      const embed = new EmbedBuilder()
-        .setColor("DarkRed")
-        .setTitle(data.title)
-        .setDescription(data.text)
-        .setFooter({
-          text: "System"
-        });
-
-      channel.send({ embeds: [embed] });
-
-    });
-
-  }, 60000); // every 1 min
+  }, 3600000); // 1 hour
 
 };
