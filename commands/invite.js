@@ -13,7 +13,7 @@ module.exports = {
   async execute(message) {
 
     // CHANGE THIS LINK
-    const inviteLink = "https://discord.gg/YOURCODE";
+    const inviteLink = "https://discord.gg/v3WPN3C4r2";
 
     const embed = new EmbedBuilder()
       .setColor(0x5865F2)
