@@ -27,54 +27,35 @@ module.exports = {
         {
           name: "🛡 Moderation",
           value:
-            "🔹 `&kick @user reason`\n" +
-            "🔹 `&ban @user reason`\n" +
-            "🔹 `&mute @user 10m reason`",
+            "🔹 `&kick`\n" +
+            "🔹 `&ban`\n" +
+            "🔹 `&mute`",
         },
 
         {
           name: "⚙️ Setup",
           value:
-            "🔹 `&setwelcome #channel`\n" +
-            "🔹 `&setlogs #channel`",
+            "🔹 `&setwelcome`\n" +
+            "🔹 `&setlogs`",
         },
 
         {
-          name: "🎂 Birthday",
+          name: "📝 Todo",
           value:
-            "🔹 `&setbirthday @user 22-3`",
+            "🔹 `&createtodo`\n" +
+            "🔹 `&addtodo`\n" +
+            "🔹 `&todo`",
         },
 
         {
-          name: "📝 Todo System",
+          name: "🎮 Fun",
           value:
-            "🔹 `&createtodo name`\n" +
-            "🔹 `&addtodo name text`\n" +
-            "🔹 `&todo name`\n" +
-            "🔹 `&todostatus name id status`\n" +
-            "🔹 `&deltodo name id`",
-        },
-
-        {
-          name: "🎮 Admin / Fun",
-          value:
-            "🔹 `&avatar`\n" +
-            "🔹 `&userinfo`\n" +
-            "🔹 `&serverinfo`\n" +
-            "🔹 `&clear amount`\n" +
-            "🔹 `&announce text`\n" +
-            "🔹 `&nick @user name`\n" +
-            "🔹 `&role @user @role`\n" +
             "🔹 `&hack`\n" +
             "🔹 `&rate`\n" +
             "🔹 `&ship`\n" +
             "🔹 `&coin`\n" +
             "🔹 `&roll`\n" +
-            "🔹 `&8ball`\n" +
-            "🔹 `&fakeban`\n" +
-            "🔹 `&fakekick`\n" +
-            "🔹 `&gayrate`\n" +
-            "🔹 `&love`",
+            "🔹 `&8ball`",
         },
 
         {
@@ -92,16 +73,17 @@ module.exports = {
             "🔹 `&entity`\n" +
             "🔹 `&summon`\n" +
             "🔹 `&darkweb`\n" +
-            "🔹 `&666`",
+            "🔹 `&666`\n" +
+            "🔹 `&trace`\n" +
+            "🔹 `&surveillance`\n" +
+            "🔹 `&lockdown`",
         }
 
       )
 
       .setFooter({
-        text: "GamingWithoutBorders • Ultra Bot 🚀"
-      })
-
-      .setTimestamp();
+        text: "GamingWithoutBorders • Ultra Bot"
+      });
 
     message.reply({ embeds: [embed] });
 
