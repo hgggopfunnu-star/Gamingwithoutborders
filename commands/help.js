@@ -19,40 +19,52 @@ module.exports = {
         {
           name: "📌 General",
           value:
-            "`&help`\n" +
-            "`&ping`\n" +
-            "`&say text`",
+            "🔹 `&help`\n" +
+            "🔹 `&ping`\n" +
+            "🔹 `&say text`",
         },
 
         {
           name: "🛡 Moderation",
           value:
-            "`&kick @user reason`\n" +
-            "`&ban @user reason`\n" +
-            "`&mute @user 10m reason`",
+            "🔹 `&kick @user reason`\n" +
+            "🔹 `&ban @user reason`\n" +
+            "🔹 `&mute @user 10m reason`",
         },
 
         {
           name: "⚙️ Setup",
           value:
-            "`&setwelcome #channel`\n" +
-            "`&setlogs #channel`",
+            "🔹 `&setwelcome #channel`\n" +
+            "🔹 `&setlogs #channel`",
         },
 
         {
           name: "🎂 Birthday",
           value:
-            "`&setbirthday @user 22-3`",
+            "🔹 `&setbirthday @user 22-3`",
         },
 
         {
           name: "📝 Todo System",
           value:
-            "`&createtodo name`\n" +
-            "`&addtodo name text`\n" +
-            "`&todo name`\n" +
-            "`&todostatus name id status`\n" +
-            "`&deltodo name id`",
+            "🔹 `&createtodo name`\n" +
+            "🔹 `&addtodo name text`\n" +
+            "🔹 `&todo name`\n" +
+            "🔹 `&todostatus name id status`\n" +
+            "🔹 `&deltodo name id`",
+        },
+
+        {
+          name: "🎮 Admin / Fun",
+          value:
+            "🔹 `&avatar`\n" +
+            "🔹 `&userinfo`\n" +
+            "🔹 `&serverinfo`\n" +
+            "🔹 `&clear amount`\n" +
+            "🔹 `&announce text`\n" +
+            "🔹 `&nick @user name`\n" +
+            "🔹 `&role @user @role`",
         }
 
       )
