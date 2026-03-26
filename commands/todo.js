@@ -1,16 +1,25 @@
-const fs = require("fs");
+const todo = require("../utils/todo");
 
-const file = "./data/todo.json";
+module.exports = {
 
-if (!fs.existsSync(file))
-  fs.writeFileSync(file, "{}");
+  name: "todo",
 
-function get() {
-  return JSON.parse(fs.readFileSync(file));
-}
+  execute(message, args) {
 
-function save(d) {
-  fs.writeFileSync(file, JSON.stringify(d, null, 2));
-}
+    const list = args[0];
 
-module.exports = { get, save };
+    const data = todo.get();
+
+    if (!data[list]) return message.reply("No list");
+
+    let text = "";
+
+    data[list].forEach((t, i) => {
+      text += `${i} | ${t.text} | ${t.status}\n`;
+    });
+
+    message.reply("```" + text + "```");
+
+  }
+
+};
