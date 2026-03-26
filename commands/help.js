@@ -89,7 +89,12 @@ module.exports = {
             "🔹 `&666`\n" +
             "🔹 `&trace`\n" +
             "🔹 `&surveillance`\n" +
-            "🔹 `&lockdown`\n",
+            "🔹 `&lockdown`\n" +
+            "🔹 `&protocol`\n" +
+            "🔹 `&breach`\n" +
+            "🔹 `&classified`\n" +
+            "🔹 `&signal`\n" +
+            "🔹 `&redalert`\n",
         },
 
         {
@@ -97,7 +102,8 @@ module.exports = {
           value:
             "🔹 `&explode`\n" +
             "🔹 `&chaos`\n" +
-            "🔹 `&freeze`\n",
+            "🔹 `&freeze`\n" +
+            "🔹 `&unslow`\n",
         }
 
       )
