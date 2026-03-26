@@ -1,129 +1,74 @@
-const {
-  Client,
-  GatewayIntentBits,
-  ActivityType,
-  Collection
-} = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
-const fs = require("fs");
-const path = require("path");
+module.exports = {
+  name: "help",
 
-const prefix = "&";
+  execute(message) {
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
-  ]
-});
+    const embed = new EmbedBuilder()
 
-client.commands = new Collection();
+      .setColor(0x5865F2)
+      .setTitle("✨ GamingWithoutBorders Bot")
+      .setDescription("Use &command")
 
+      .addFields(
 
-// ===== LOAD COMMANDS SAFELY =====
+        {
+          name: "📌 General",
+          value:
+          "🔹 &help\n🔹 &ping\n🔹 &say"
+        },
 
-const commandsPath = path.join(__dirname, "commands");
+        {
+          name: "🛡️ Moderation",
+          value:
+          "🔹 &kick\n🔹 &ban\n🔹 &mute\n🔹 &clear"
+        },
 
-if (fs.existsSync(commandsPath)) {
+        {
+          name: "⚙️ Setup",
+          value:
+          "🔹 &setwelcome\n🔹 &setlogs"
+        },
 
-  const files = fs.readdirSync(commandsPath);
+        {
+          name: "🎂 Birthday",
+          value:
+          "🔹 &setbirthday"
+        },
 
-  for (const file of files) {
+        {
+          name: "📝 Todo",
+          value:
+          "🔹 &createtodo\n🔹 &addtodo\n🔹 &todo\n🔹 &todostatus\n🔹 &deltodo"
+        },
 
-    try {
+        {
+          name: "😂 Fun",
+          value:
+          "🔹 &hack\n🔹 &rate\n🔹 &ship\n🔹 &coin\n🔹 &roll\n🔹 &8ball\n🔹 &fakeban\n🔹 &fakekick\n🔹 &gayrate\n🔹 &love"
+        },
 
-      const command = require(`./commands/${file}`);
+        {
+          name: "👻 Ghost",
+          value:
+          "🔹 &ghost\n🔹 &curse\n🔹 &scan\n🔹 &lastseen\n🔹 &ritual\n🔹 &demon\n🔹 &possess\n🔹 &haunted\n🔹 &nightmare\n🔹 &entity\n🔹 &summon\n🔹 &darkweb\n🔹 &666\n🔹 &trace\n🔹 &surveillance\n🔹 &lockdown\n🔹 &protocol\n🔹 &breach\n🔹 &classified\n🔹 &signal\n🔹 &redalert"
+        },
 
-      if (command.name) {
-        client.commands.set(command.name, command);
-      }
+        {
+          name: "🔥 Admin Fun",
+          value:
+          "🔹 &explode\n🔹 &chaos\n🔹 &freeze\n🔹 &unslow"
+        }
 
-    } catch (err) {
+      )
 
-      console.log("Command load error:", file);
+      .setFooter({
+        text: "GamingWithoutBorders • Ultra Bot 🚀"
+      });
 
-    }
-
-  }
-
-}
-
-
-// ===== READY =====
-
-client.once("ready", () => {
-
-  console.log(`✅ Bot Online: ${client.user.tag}`);
-
-  client.user.setPresence({
-    status: "online",
-    activities: [
-      {
-        name: "GamingWithoutBorders",
-        type: ActivityType.Playing
-      }
-    ]
-  });
-
-  // ===== LOAD SCARY EVENTS =====
-
-  try {
-
-    const scaryEvents = require("./utils/scaryEvents");
-
-    scaryEvents(client);
-
-    console.log("👻 Scary events loaded");
-
-  } catch (err) {
-
-    console.log("No scaryEvents.js found");
+    message.reply({ embeds: [embed] });
 
   }
 
-});
-
-
-// ===== COMMAND HANDLER =====
-
-client.on("messageCreate", message => {
-
-  if (!message.guild) return;
-  if (message.author.bot) return;
-
-  if (!message.content.startsWith(prefix)) return;
-
-  const args = message.content
-    .slice(prefix.length)
-    .trim()
-    .split(/ +/);
-
-  const cmdName = args.shift().toLowerCase();
-
-  const cmd = client.commands.get(cmdName);
-
-  if (!cmd) return;
-
-  try {
-
-    cmd.execute(message, args, client);
-
-  } catch (err) {
-
-    console.log(err);
-
-  }
-
-});
-
-
-// ===== CRASH PROTECTION =====
-
-process.on("unhandledRejection", console.error);
-process.on("uncaughtException", console.error);
-
-
-// ===== LOGIN =====
-
-client.login(process.env.TOKEN);
+};
