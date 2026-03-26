@@ -56,7 +56,7 @@ module.exports = {
         },
 
         {
-          name: "🎮 Admin / Fun",
+          name: "🎮 Admin / Utility",
           value:
             "🔹 `&avatar`\n" +
             "🔹 `&userinfo`\n" +
@@ -65,6 +65,21 @@ module.exports = {
             "🔹 `&announce text`\n" +
             "🔹 `&nick @user name`\n" +
             "🔹 `&role @user @role`",
+        },
+
+        {
+          name: "😂 Fun",
+          value:
+            "🔹 `&hack @user`\n" +
+            "🔹 `&rate text`\n" +
+            "🔹 `&ship @user @user`\n" +
+            "🔹 `&coin`\n" +
+            "🔹 `&roll [max]`\n" +
+            "🔹 `&8ball question`\n" +
+            "🔹 `&fakeban @user`\n" +
+            "🔹 `&fakekick @user`\n" +
+            "🔹 `&gayrate @user`\n" +
+            "🔹 `&love @user @user`",
         }
 
       )
