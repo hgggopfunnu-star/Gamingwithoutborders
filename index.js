@@ -8,9 +8,6 @@ const {
 const fs = require("fs");
 const path = require("path");
 
-const { startYouTubeNotifier } =
-require("./utils/youtubeNotifier");
-
 const prefix = "&";
 
 const client = new Client({
@@ -26,34 +23,25 @@ client.commands = new Collection();
 
 // ===== LOAD COMMANDS SAFELY =====
 
-const commandsPath =
-path.join(__dirname, "commands");
+const commandsPath = path.join(__dirname, "commands");
 
 if (fs.existsSync(commandsPath)) {
 
-  const files =
-  fs.readdirSync(commandsPath);
+  const files = fs.readdirSync(commandsPath);
 
   for (const file of files) {
 
     try {
 
-      const command =
-      require(`./commands/${file}`);
+      const command = require(`./commands/${file}`);
 
       if (command.name) {
-        client.commands.set(
-          command.name,
-          command
-        );
+        client.commands.set(command.name, command);
       }
 
     } catch (err) {
 
-      console.log(
-        "Command load error:",
-        file
-      );
+      console.log("Command load error:", file);
 
     }
 
@@ -66,9 +54,7 @@ if (fs.existsSync(commandsPath)) {
 
 client.once("ready", () => {
 
-  console.log(
-    `✅ Bot Online: ${client.user.tag}`
-  );
+  console.log(`✅ Bot Online: ${client.user.tag}`);
 
   client.user.setPresence({
     status: "online",
@@ -80,13 +66,11 @@ client.once("ready", () => {
     ]
   });
 
-
   // ===== LOAD SCARY EVENTS =====
 
   try {
 
-    const scaryEvents =
-      require("./utils/scaryEvents");
+    const scaryEvents = require("./utils/scaryEvents");
 
     scaryEvents(client);
 
@@ -94,28 +78,7 @@ client.once("ready", () => {
 
   } catch (err) {
 
-    console.log(
-      "No scaryEvents.js found"
-    );
-
-  }
-
-
-  // ===== YOUTUBE NOTIFIER =====
-
-  try {
-
-    startYouTubeNotifier(client);
-
-    console.log(
-      "📺 YouTube notifier started"
-    );
-
-  } catch (err) {
-
-    console.log(
-      "YouTube notifier error"
-    );
+    console.log("No scaryEvents.js found");
 
   }
 
@@ -124,64 +87,43 @@ client.once("ready", () => {
 
 // ===== COMMAND HANDLER =====
 
-client.on(
-  "messageCreate",
-  message => {
+client.on("messageCreate", message => {
 
-    if (!message.guild) return;
-    if (message.author.bot) return;
+  if (!message.guild) return;
+  if (message.author.bot) return;
 
-    if (!message.content
-      .startsWith(prefix)) return;
+  if (!message.content.startsWith(prefix)) return;
 
-    const args =
-      message.content
-      .slice(prefix.length)
-      .trim()
-      .split(/ +/);
+  const args = message.content
+    .slice(prefix.length)
+    .trim()
+    .split(/ +/);
 
-    const cmdName =
-      args.shift()
-      .toLowerCase();
+  const cmdName = args.shift().toLowerCase();
 
-    const cmd =
-      client.commands.get(cmdName);
+  const cmd = client.commands.get(cmdName);
 
-    if (!cmd) return;
+  if (!cmd) return;
 
-    try {
+  try {
 
-      cmd.execute(
-        message,
-        args,
-        client
-      );
+    cmd.execute(message, args, client);
 
-    } catch (err) {
+  } catch (err) {
 
-      console.log(err);
-
-    }
+    console.log(err);
 
   }
-);
+
+});
 
 
 // ===== CRASH PROTECTION =====
 
-process.on(
-  "unhandledRejection",
-  console.error
-);
-
-process.on(
-  "uncaughtException",
-  console.error
-);
+process.on("unhandledRejection", console.error);
+process.on("uncaughtException", console.error);
 
 
 // ===== LOGIN =====
 
-client.login(
-  process.env.TOKEN
-);
+client.login(process.env.TOKEN);
