@@ -21,7 +21,7 @@ module.exports = {
           value:
             "🔹 `&help`\n" +
             "🔹 `&ping`\n" +
-            "🔹 `&say text`",
+            "🔹 `&say`\n",
         },
 
         {
@@ -29,14 +29,21 @@ module.exports = {
           value:
             "🔹 `&kick`\n" +
             "🔹 `&ban`\n" +
-            "🔹 `&mute`",
+            "🔹 `&mute`\n" +
+            "🔹 `&clear`\n",
         },
 
         {
           name: "⚙️ Setup",
           value:
             "🔹 `&setwelcome`\n" +
-            "🔹 `&setlogs`",
+            "🔹 `&setlogs`\n",
+        },
+
+        {
+          name: "🎂 Birthday",
+          value:
+            "🔹 `&setbirthday`\n",
         },
 
         {
@@ -44,18 +51,24 @@ module.exports = {
           value:
             "🔹 `&createtodo`\n" +
             "🔹 `&addtodo`\n" +
-            "🔹 `&todo`",
+            "🔹 `&todo`\n" +
+            "🔹 `&todostatus`\n" +
+            "🔹 `&deltodo`\n",
         },
 
         {
-          name: "🎮 Fun",
+          name: "😂 Fun",
           value:
             "🔹 `&hack`\n" +
             "🔹 `&rate`\n" +
             "🔹 `&ship`\n" +
             "🔹 `&coin`\n" +
             "🔹 `&roll`\n" +
-            "🔹 `&8ball`",
+            "🔹 `&8ball`\n" +
+            "🔹 `&fakeban`\n" +
+            "🔹 `&fakekick`\n" +
+            "🔹 `&gayrate`\n" +
+            "🔹 `&love`\n",
         },
 
         {
@@ -76,14 +89,24 @@ module.exports = {
             "🔹 `&666`\n" +
             "🔹 `&trace`\n" +
             "🔹 `&surveillance`\n" +
-            "🔹 `&lockdown`",
+            "🔹 `&lockdown`\n",
+        },
+
+        {
+          name: "🔥 Admin Fun",
+          value:
+            "🔹 `&explode`\n" +
+            "🔹 `&chaos`\n" +
+            "🔹 `&freeze`\n",
         }
 
       )
 
       .setFooter({
-        text: "GamingWithoutBorders • Ultra Bot"
-      });
+        text: "GamingWithoutBorders • Ultra Bot 🚀"
+      })
+
+      .setTimestamp();
 
     message.reply({ embeds: [embed] });
 
