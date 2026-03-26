@@ -21,27 +21,45 @@ const client = new Client({
 client.commands = new Collection();
 
 
-// ===== LOAD COMMANDS SAFELY =====
+// ===== LOAD COMMANDS (FOLDER SAFE) =====
 
 const commandsPath = path.join(__dirname, "commands");
 
-if (fs.existsSync(commandsPath)) {
+function loadCommands(dir) {
 
-  const files = fs.readdirSync(commandsPath);
+  if (!fs.existsSync(dir)) return;
+
+  const files = fs.readdirSync(dir);
 
   for (const file of files) {
 
-    try {
+    const fullPath = path.join(dir, file);
 
-      const command = require(`./commands/${file}`);
+    if (fs.lstatSync(fullPath).isDirectory()) {
 
-      if (command.name) {
-        client.commands.set(command.name, command);
+      loadCommands(fullPath);
+
+    } else if (file.endsWith(".js")) {
+
+      try {
+
+        const command = require(fullPath);
+
+        if (command.name) {
+          client.commands.set(
+            command.name,
+            command
+          );
+        }
+
+      } catch (err) {
+
+        console.log(
+          "Command load error:",
+          file
+        );
+
       }
-
-    } catch (err) {
-
-      console.log("Command load error:", file);
 
     }
 
@@ -49,12 +67,16 @@ if (fs.existsSync(commandsPath)) {
 
 }
 
+loadCommands(commandsPath);
+
 
 // ===== READY =====
 
 client.once("ready", () => {
 
-  console.log(`✅ Bot Online: ${client.user.tag}`);
+  console.log(
+    `✅ Bot Online: ${client.user.tag}`
+  );
 
   client.user.setPresence({
     status: "online",
@@ -66,19 +88,24 @@ client.once("ready", () => {
     ]
   });
 
-  // ===== LOAD SCARY EVENTS =====
+  // scary events
 
   try {
 
-    const scaryEvents = require("./utils/scaryEvents");
+    const scaryEvents =
+      require("./utils/scaryEvents");
 
     scaryEvents(client);
 
-    console.log("👻 Scary events loaded");
+    console.log(
+      "👻 Scary events loaded"
+    );
 
-  } catch (err) {
+  } catch {
 
-    console.log("No scaryEvents.js found");
+    console.log(
+      "No scaryEvents.js"
+    );
 
   }
 
@@ -92,22 +119,29 @@ client.on("messageCreate", message => {
   if (!message.guild) return;
   if (message.author.bot) return;
 
-  if (!message.content.startsWith(prefix)) return;
+  if (!message.content.startsWith(prefix))
+    return;
 
   const args = message.content
     .slice(prefix.length)
     .trim()
     .split(/ +/);
 
-  const cmdName = args.shift().toLowerCase();
+  const cmdName =
+    args.shift().toLowerCase();
 
-  const cmd = client.commands.get(cmdName);
+  const cmd =
+    client.commands.get(cmdName);
 
   if (!cmd) return;
 
   try {
 
-    cmd.execute(message, args, client);
+    cmd.execute(
+      message,
+      args,
+      client
+    );
 
   } catch (err) {
 
@@ -120,10 +154,19 @@ client.on("messageCreate", message => {
 
 // ===== CRASH PROTECTION =====
 
-process.on("unhandledRejection", console.error);
-process.on("uncaughtException", console.error);
+process.on(
+  "unhandledRejection",
+  console.error
+);
+
+process.on(
+  "uncaughtException",
+  console.error
+);
 
 
 // ===== LOGIN =====
 
-client.login(process.env.TOKEN);
+client.login(
+  process.env.TOKEN
+);
