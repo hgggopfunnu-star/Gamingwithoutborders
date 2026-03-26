@@ -87,7 +87,12 @@ module.exports = {
             "🔹 `&ritual`\n" +
             "🔹 `&demon`\n" +
             "🔹 `&possess`\n" +
-            "🔹 `&haunted`",
+            "🔹 `&haunted`\n" +
+            "🔹 `&nightmare`\n" +
+            "🔹 `&entity`\n" +
+            "🔹 `&summon`\n" +
+            "🔹 `&darkweb`\n" +
+            "🔹 `&666`",
         }
 
       )
