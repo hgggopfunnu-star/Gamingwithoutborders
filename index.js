@@ -66,6 +66,22 @@ client.once("ready", () => {
     ]
   });
 
+  // ===== LOAD SCARY EVENTS =====
+
+  try {
+
+    const scaryEvents = require("./utils/scaryEvents");
+
+    scaryEvents(client);
+
+    console.log("👻 Scary events loaded");
+
+  } catch (err) {
+
+    console.log("No scaryEvents.js found");
+
+  }
+
 });
 
 
@@ -73,6 +89,7 @@ client.once("ready", () => {
 
 client.on("messageCreate", message => {
 
+  if (!message.guild) return;
   if (message.author.bot) return;
 
   if (!message.content.startsWith(prefix)) return;
