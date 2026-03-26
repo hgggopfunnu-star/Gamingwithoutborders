@@ -83,7 +83,11 @@ module.exports = {
             "🔹 `&ghost`\n" +
             "🔹 `&curse`\n" +
             "🔹 `&scan`\n" +
-            "🔹 `&lastseen`",
+            "🔹 `&lastseen`\n" +
+            "🔹 `&ritual`\n" +
+            "🔹 `&demon`\n" +
+            "🔹 `&possess`\n" +
+            "🔹 `&haunted`",
         }
 
       )
