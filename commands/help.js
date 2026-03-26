@@ -1,121 +1,129 @@
-const { EmbedBuilder } = require("discord.js");
+const {
+  Client,
+  GatewayIntentBits,
+  ActivityType,
+  Collection
+} = require("discord.js");
 
-module.exports = {
+const fs = require("fs");
+const path = require("path");
 
-  name: "help",
+const prefix = "&";
 
-  execute(message) {
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ]
+});
 
-    const embed = new EmbedBuilder()
+client.commands = new Collection();
 
-      .setColor(0x5865F2)
 
-      .setTitle("✨ GamingWithoutBorders Bot")
+// ===== LOAD COMMANDS SAFELY =====
 
-      .setDescription("Use &command")
+const commandsPath = path.join(__dirname, "commands");
 
-      .addFields(
+if (fs.existsSync(commandsPath)) {
 
-        {
-          name: "📌 General",
-          value:
-            "🔹 `&help`\n" +
-            "🔹 `&ping`\n" +
-            "🔹 `&say`\n",
-        },
+  const files = fs.readdirSync(commandsPath);
 
-        {
-          name: "🛡 Moderation",
-          value:
-            "🔹 `&kick`\n" +
-            "🔹 `&ban`\n" +
-            "🔹 `&mute`\n" +
-            "🔹 `&clear`\n",
-        },
+  for (const file of files) {
 
-        {
-          name: "⚙️ Setup",
-          value:
-            "🔹 `&setwelcome`\n" +
-            "🔹 `&setlogs`\n",
-        },
+    try {
 
-        {
-          name: "🎂 Birthday",
-          value:
-            "🔹 `&setbirthday`\n",
-        },
+      const command = require(`./commands/${file}`);
 
-        {
-          name: "📝 Todo",
-          value:
-            "🔹 `&createtodo`\n" +
-            "🔹 `&addtodo`\n" +
-            "🔹 `&todo`\n" +
-            "🔹 `&todostatus`\n" +
-            "🔹 `&deltodo`\n",
-        },
+      if (command.name) {
+        client.commands.set(command.name, command);
+      }
 
-        {
-          name: "😂 Fun",
-          value:
-            "🔹 `&hack`\n" +
-            "🔹 `&rate`\n" +
-            "🔹 `&ship`\n" +
-            "🔹 `&coin`\n" +
-            "🔹 `&roll`\n" +
-            "🔹 `&8ball`\n" +
-            "🔹 `&fakeban`\n" +
-            "🔹 `&fakekick`\n" +
-            "🔹 `&gayrate`\n" +
-            "🔹 `&love`\n",
-        },
+    } catch (err) {
 
-        {
-          name: "👻 Ghost",
-          value:
-            "🔹 `&ghost`\n" +
-            "🔹 `&curse`\n" +
-            "🔹 `&scan`\n" +
-            "🔹 `&lastseen`\n" +
-            "🔹 `&ritual`\n" +
-            "🔹 `&demon`\n" +
-            "🔹 `&possess`\n" +
-            "🔹 `&haunted`\n" +
-            "🔹 `&nightmare`\n" +
-            "🔹 `&entity`\n" +
-            "🔹 `&summon`\n" +
-            "🔹 `&darkweb`\n" +
-            "🔹 `&666`\n" +
-            "🔹 `&trace`\n" +
-            "🔹 `&surveillance`\n" +
-            "🔹 `&lockdown`\n" +
-            "🔹 `&protocol`\n" +
-            "🔹 `&breach`\n" +
-            "🔹 `&classified`\n" +
-            "🔹 `&signal`\n" +
-            "🔹 `&redalert`\n",
-        },
+      console.log("Command load error:", file);
 
-        {
-          name: "🔥 Admin Fun",
-          value:
-            "🔹 `&explode`\n" +
-            "🔹 `&chaos`\n" +
-            "🔹 `&freeze`\n" +
-            "🔹 `&unslow`\n",
-        }
-
-      )
-
-      .setFooter({
-        text: "GamingWithoutBorders • Ultra Bot 🚀"
-      })
-
-      .setTimestamp();
-
-    message.reply({ embeds: [embed] });
+    }
 
   }
 
-};
+}
+
+
+// ===== READY =====
+
+client.once("ready", () => {
+
+  console.log(`✅ Bot Online: ${client.user.tag}`);
+
+  client.user.setPresence({
+    status: "online",
+    activities: [
+      {
+        name: "GamingWithoutBorders",
+        type: ActivityType.Playing
+      }
+    ]
+  });
+
+  // ===== LOAD SCARY EVENTS =====
+
+  try {
+
+    const scaryEvents = require("./utils/scaryEvents");
+
+    scaryEvents(client);
+
+    console.log("👻 Scary events loaded");
+
+  } catch (err) {
+
+    console.log("No scaryEvents.js found");
+
+  }
+
+});
+
+
+// ===== COMMAND HANDLER =====
+
+client.on("messageCreate", message => {
+
+  if (!message.guild) return;
+  if (message.author.bot) return;
+
+  if (!message.content.startsWith(prefix)) return;
+
+  const args = message.content
+    .slice(prefix.length)
+    .trim()
+    .split(/ +/);
+
+  const cmdName = args.shift().toLowerCase();
+
+  const cmd = client.commands.get(cmdName);
+
+  if (!cmd) return;
+
+  try {
+
+    cmd.execute(message, args, client);
+
+  } catch (err) {
+
+    console.log(err);
+
+  }
+
+});
+
+
+// ===== CRASH PROTECTION =====
+
+process.on("unhandledRejection", console.error);
+process.on("uncaughtException", console.error);
+
+
+// ===== LOGIN =====
+
+client.login(process.env.TOKEN);
