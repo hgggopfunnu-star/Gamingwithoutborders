@@ -1,5 +1,4 @@
-const t = require("../utils/todo");
-const { ok } = require("../utils/ui");
+const todo = require("../utils/todo");
 
 module.exports = {
 
@@ -9,15 +8,17 @@ module.exports = {
 
     const name = args[0];
 
-    const data = t.get();
+    if (!name) return message.reply("Give name");
+
+    const data = todo.get();
+
+    if (data[name]) return message.reply("List exists");
 
     data[name] = [];
 
-    t.save(data);
+    todo.save(data);
 
-    message.reply({
-      embeds: [ok("Todo created")]
-    });
+    message.reply(`Created list ${name}`);
 
   }
 
