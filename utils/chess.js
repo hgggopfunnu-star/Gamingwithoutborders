@@ -1,62 +1,48 @@
-const { Chess } = require("chess.js");
+const { EmbedBuilder } = require("discord.js");
+const chess = require("../utils/chess");
 
-const games = new Map();
+module.exports = {
+  name: "chess",
 
-function startGame(player1, player2) {
-    const game = new Chess();
+  execute(message, args) {
 
-    games.set(player1.id, {
-        game,
-        opponent: player2.id,
-        turn: player1.id
-    });
+    const opponent = message.mentions.users.first();
 
-    games.set(player2.id, {
-        game,
-        opponent: player1.id,
-        turn: player1.id
-    });
+    // ❌ No mention
+    if (!opponent) {
+      return message.reply("❌ You need to mention someone!\nExample: `&chess @user`");
+    }
 
-    return game;
-}
+    // ❌ Self play
+    if (opponent.id === message.author.id) {
+      return message.reply("💀 You can't play against yourself");
+    }
 
-function getGame(userId) {
-    return games.get(userId);
-}
-
-function makeMove(userId, move) {
-    const data = games.get(userId);
-    if (!data) return { error: "No game found" };
-
-    if (data.turn !== userId) {
-        return { error: "Not your turn" };
+    // ❌ Bots
+    if (opponent.bot) {
+      return message.reply("🤖 You can't play against bots");
     }
 
     try {
-        const result = data.game.move(move);
-        if (!result) return { error: "Invalid move" };
+      chess.startGame(message.author, opponent);
 
-        // switch turn
-        data.turn = data.opponent;
-        games.get(data.opponent).turn = data.opponent;
+      const embed = new EmbedBuilder()
+        .setColor("Green")
+        .setTitle("♟️ Chess Game Started")
+        .setDescription(
+          `👤 **${message.author.username}** vs **${opponent.username}**\n\n` +
+          `🎯 Turn: **${message.author.username}**\n\n` +
+          "📌 Use: `&move e2e4`"
+        )
+        .setFooter({ text: "Chess System" });
 
-        return { success: true, game: data.game };
-    } catch {
-        return { error: "Invalid move format" };
+      message.reply({ embeds: [embed] });
+
+    } catch (err) {
+      console.error(err);
+
+      message.reply("❌ Failed to start chess game (check console)");
     }
-}
 
-function endGame(userId) {
-    const data = games.get(userId);
-    if (!data) return;
-
-    games.delete(userId);
-    games.delete(data.opponent);
-}
-
-module.exports = {
-    startGame,
-    getGame,
-    makeMove,
-    endGame
+  }
 };
