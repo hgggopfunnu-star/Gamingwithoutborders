@@ -101,6 +101,24 @@ module.exports = {
           "🔹 &chaos\n" +
           "🔹 &freeze\n" +
           "🔹 &unslow"
+        },
+
+        {
+          name: "💰 Economyyyyyy",
+          value:
+          "🔹 &balance\n" +
+          "🔹 &daily\n" +
+          "🔹 &work\n" +
+          "🔹 &give\n" +
+          "🔹 &rob\n" +
+          "🔹 &shop\n" +
+          "🔹 &buy\n" +
+          "🔹 &inventory\n" +
+          "🔹 &deposit\n" +
+          "🔹 &withdraw\n" +
+          "🔹 &casino\n" +
+          "🔹 &transactions\n" +
+          "🔹 &job"
         }
 
       )
