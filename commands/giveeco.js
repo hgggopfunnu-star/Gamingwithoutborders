@@ -5,7 +5,7 @@ module.exports = {
 
     async execute(message, args) {
 
-        if (message.author.id !== "YOUR_DISCORD_ID") {
+        if (message.author.id !== "1173498933453000724") {
             return message.reply("❌ You cannot use this command.");
         }
 
