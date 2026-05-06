@@ -5,16 +5,21 @@ module.exports = {
 
     async execute(message, args) {
 
-        if (message.author.id !== "YOUR_DISCORD_ID")
+        if (message.author.id !== "YOUR_DISCORD_ID") {
             return message.reply("❌ You cannot use this command.");
+        }
 
         const user = message.mentions.users.first();
-        if (!user) return message.reply("❌ Mention a user.");
 
-        const amount = parseInt(args[1]);
+        if (!user) {
+            return message.reply("❌ Please mention a user.");
+        }
 
-        if (isNaN(amount) || amount <= 0)
+        const amount = Number(args[1]);
+
+        if (!amount || amount <= 0) {
             return message.reply("❌ Enter a valid amount.");
+        }
 
         economy.addBalance(user.id, amount);
 
