@@ -1,5 +1,7 @@
 [
   { "name": "Laptop", "price": 1000 },
   { "name": "Phone", "price": 500 },
+  { "name": "Pasta", "price": 5 },
+  { "name": "Pizza", "price": 8 },
   { "name": "VIP", "price": 2000 }
 ]
